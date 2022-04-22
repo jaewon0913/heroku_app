@@ -31,11 +31,15 @@ public class MemberController {
 
     @PostMapping("/members/new")
     public String createMember(@Valid MemberForm form, BindingResult bindingResult){
+        log.info("Post : Members New");
+
         return validation(form, bindingResult);
     }
 
     @PostMapping("/members/save")
     public String createJsonMember(@RequestBody @Valid MemberForm form, BindingResult bindingResult){
+        log.info("Post : Members Save");
+
         return validation(form, bindingResult);
     }
 
@@ -49,7 +53,6 @@ public class MemberController {
     }
 
     private String validation(@Valid @RequestBody MemberForm form, BindingResult bindingResult) {
-        log.info("Post : Members New Save");
 
         if(bindingResult.hasErrors()){
             return "members/createMemberForm";
