@@ -42,4 +42,7 @@ tasks.named('test') {
 
 bootJar {
     destinationDirectory = file("./target")
+    archivesBaseName = 'heroku_app'
+    archiveFileName = 'heroku_app.jar'
+    archiveVersion = "0.0.0"
 }
