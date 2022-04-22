@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
 
@@ -30,6 +31,24 @@ public class MemberController {
 
     @PostMapping("/members/new")
     public String createMember(@Valid MemberForm form, BindingResult bindingResult){
+        return validation(form, bindingResult);
+    }
+
+    @PostMapping("/members/save")
+    public String createJsonMember(@RequestBody @Valid MemberForm form, BindingResult bindingResult){
+        return validation(form, bindingResult);
+    }
+
+    @GetMapping("/members")
+    public String list(Model model){
+        log.info("Get : Members List");
+
+        model.addAttribute("members", memberService.findMembers());
+
+        return "members/memberList";
+    }
+
+    private String validation(@Valid @RequestBody MemberForm form, BindingResult bindingResult) {
         log.info("Post : Members New Save");
 
         if(bindingResult.hasErrors()){
@@ -45,14 +64,5 @@ public class MemberController {
         memberService.join(member);
 
         return "redirect:/";
-    }
-
-    @GetMapping("/members")
-    public String list(Model model){
-        log.info("Get : Members List");
-
-        model.addAttribute("members", memberService.findMembers());
-
-        return "members/memberList";
     }
 }
