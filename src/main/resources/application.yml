@@ -1,0 +1,26 @@
+server:
+  port: 8787
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://us-cdbr-east-05.cleardb.net:3306/heroku_986312cfcca7cd0?serverTimezone=UTC&characterEncoding=UTF-8
+    username: b48c21672227f5
+    password: 3de8ed58
+  h2:
+    console:
+      enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        #show_sql: true
+        format_sql: true
+    generate-ddl: true
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
