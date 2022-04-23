@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form role="form" action="/todo/new" th:object="${todoForm}"
+    <form role="form" action="/todos/new" th:object="${todoForm}"
           method="post">
         <div class="form-group">
             <label th:for="title">제목</label>
@@ -22,7 +22,7 @@
                    th:class="${#fields.hasErrors('content')}? 'form-control fieldError' : 'form-control'">
             <p th:if="${#fields.hasErrors('content')}" th:errors="*{content}">Incorrect date</p>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Todo 등록</button>
     </form>
     <br/>
     <div th:replace="fragments/footer :: footer" />
