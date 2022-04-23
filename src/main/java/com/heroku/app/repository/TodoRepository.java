@@ -25,6 +25,7 @@ public class TodoRepository {
 
     // 전체 조회
     public List<Todo> findAll(){
-        return em.createQuery("select t from Todo t", Todo.class).getResultList();
+        return em.createQuery("select t from Todo t", Todo.class)
+                .getResultList();
     }
 }
