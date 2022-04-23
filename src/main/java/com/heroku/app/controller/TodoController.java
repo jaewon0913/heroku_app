@@ -21,7 +21,7 @@ public class TodoController {
 
     private final TodoService todoService;
 
-    @GetMapping("/todo/new")
+    @GetMapping("/todos/new")
     public String createForm(Model model){
         log.info("Get : Todos New Form");
         model.addAttribute("todoForm", new TodoForm());
@@ -29,21 +29,21 @@ public class TodoController {
         return "todos/createTodoForm";
     }
 
-    @PostMapping("/todo/new")
+    @PostMapping("/todos/new")
     public String createTodo(@Valid TodoForm form, BindingResult bindingResult){
         log.info("Post : Todos New");
 
         return validation(form, bindingResult);
     }
 
-    @PostMapping("/todo/save")
+    @PostMapping("/todos/save")
     public String createJsonTodo(@RequestBody @Valid TodoForm form, BindingResult bindingResult){
         log.info("Post : Members Save");
 
         return validation(form, bindingResult);
     }
 
-    @GetMapping("/todo")
+    @GetMapping("/todos")
     public String list(Model model){
         log.info("Get : Todos List");
 
