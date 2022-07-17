@@ -1,7 +1,7 @@
 package com.heroku.app.controller;
 
-import com.springboot.backend.model.Todo;
-import com.springboot.backend.service.TodoService;
+import com.heroku.app.domain.Todo;
+import com.heroku.app.service.TodoService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
