@@ -24,8 +24,32 @@ public class TodoRepository {
     }
 
     // 전체 조회
-    public List<Todo> findAll(){
-        return em.createQuery("select t from Todo t", Todo.class)
-                .getResultList();
+    public List<Todo> findAll(boolean orderState){
+
+        List<Todo> todoList = null;
+        if(orderState){
+            todoList = em.createQuery(
+                    "select t from Todo t" +
+                            " where t.useYn = 'Y'" +
+                            " order by t.writeDate DESC ", Todo.class)
+                    .getResultList();
+        } else {
+            todoList = em.createQuery(
+                    "select t from Todo t" +
+                            " where t.useYn = 'Y'" +
+                            " order by t.writeDate ASC ", Todo.class)
+                    .getResultList();
+        }
+
+        return todoList;
+    }
+
+    // 전체 업데이트
+    public int updateTodoAllClear() {
+        return em.createQuery(
+                "update Todo t " +
+                        " set t.useYn = 'N' " +
+                        " where t.useYn = 'Y'")
+                .executeUpdate();
     }
 }

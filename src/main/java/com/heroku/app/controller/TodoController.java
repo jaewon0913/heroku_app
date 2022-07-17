@@ -1,71 +1,127 @@
 package com.heroku.app.controller;
 
-import com.heroku.app.domain.Todo;
-import com.heroku.app.service.TodoService;
+import com.springboot.backend.model.Todo;
+import com.springboot.backend.service.TodoService;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @Slf4j
 public class TodoController {
 
     private final TodoService todoService;
 
-    @GetMapping("/todos/new")
-    public String createForm(Model model){
-        log.info("Get : Todos New Form");
-        model.addAttribute("todoForm", new TodoForm());
-
-        return "todos/createTodoForm";
-    }
-
-    @PostMapping("/todos/new")
-    public String createTodo(@Valid TodoForm form, BindingResult bindingResult){
-        log.info("Post : Todos New");
-
-        return validation(form, bindingResult);
-    }
-
+    /**
+     * Todo 등록
+     * @return
+     */
     @PostMapping("/todos/save")
     public String createJsonTodo(@RequestBody @Valid TodoForm form, BindingResult bindingResult){
-        log.info("Post : Members Save");
+        log.info("Post : Todo Save");
 
         return validation(form, bindingResult);
     }
 
-    @GetMapping("/todos")
-    public String list(Model model){
+    /**
+     * Todo 목록
+     * @return
+     */
+    @GetMapping("/todos/{orderState}")
+    public List<Todo> list(@PathVariable("orderState") Boolean orderState){
         log.info("Get : Todos List");
 
-        model.addAttribute("todos", todoService.findTodos());
+        return todoService.findTodos(orderState);
+    }
 
-        return "todos/todoList";
+    /**
+     * Todo 완료 상태 업데이트
+     * @return
+     */
+    @PutMapping("/todos/{id}")
+    public String updateTodo(
+            @PathVariable("id") Long id,
+            @RequestBody UpdateTodoRequest request
+    ){
+        log.info("Put : Todo update");
+
+        todoService.updateTodoComplted(id, request.isCompleted());
+
+        Todo findTodo = todoService.findOne(id);
+
+        if(request.isCompleted() == findTodo.isCompleted()){
+            return "ok";
+        } else {
+            return "fail";
+        }
+    }
+
+    /**
+     * Todo 삭제(DB 업데이트)
+     */
+    @PutMapping("/todos/delete/{id}")
+    public String deleteTodo(
+            @PathVariable("id") Long id
+    ){
+        log.info("Delete : Todo Delete");
+
+        todoService.updateTodoUseYn(id);
+
+        Todo findTodo = todoService.findOne(id);
+
+        if(findTodo.getUseYn().equals("N")){
+            return "ok";
+        } else {
+            return "fail";
+        }
+    }
+
+    @PutMapping("/todos/clear")
+    public String clearAllTodo(){
+        log.info("Clear : Todo All Clear");
+
+        int result = todoService.updateTodoAllClear();
+
+        if(result > 0){
+            return "ok";
+        } else {
+            return "fail";
+        }
     }
 
     private String validation(@Valid @RequestBody TodoForm form, BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()){
-            return "todos/createTodoForm";
+            return "todo error";
         }
 
         Todo todo = new Todo();
-        todo.setTitle(form.getTitle());
-        todo.setContent(form.getContent());
+        todo.setItem(form.getItem());
+        todo.setCompleted(form.isCompleted());
+        todo.setDate(form.getDate());
+        todo.setTime(form.getTime());
         todo.setWriteDate(LocalDateTime.now());
         todo.setUpdateDate(LocalDateTime.now());
 
         todoService.save(todo);
 
-        return "redirect:/";
+        return "ok";
+    }
+
+    @Data
+    static class UpdateTodoRequest{
+
+        private Long id;
+        @NotEmpty
+        private boolean completed;
+
     }
 }
