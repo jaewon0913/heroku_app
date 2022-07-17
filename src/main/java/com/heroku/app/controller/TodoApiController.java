@@ -28,6 +28,8 @@ public class TodoApiController {
                 .map(o -> new ResponseTodoDto(o))
                 .collect(Collectors.toList());
 
+        log.info("TodoList -> " + results.stream().collect(Collectors.toList()).toString());
+
         return results;
     }
 
